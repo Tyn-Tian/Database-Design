@@ -1,0 +1,86 @@
+@startuml
+
+entity User {
+    * user_id varchar(100) <<PK>>
+    --
+    * email varchar(100) not null
+    * name varchar(100) not null
+    * birthday date
+}
+
+entity Playlist {
+    * playlist_id varchar(100) <<PK>>
+    --
+    * name varchar(100) not null
+    * description text
+    --
+    * user_id varchar(100) <<FK>>
+    * category_id varchar(100) <<FK>>
+}
+
+entity PlaylistCategory {
+    * category_id varchar(100) <<PK>>
+    --
+    * name varchar(100) not null
+}
+
+entity ContainsSong {
+    * playlist_id varchar(100) <<FK>>
+    * song_id varchar(100) <<FK>>
+}
+
+entity Song {
+    * song_id varchar(100) <<PK>>
+    --
+    * title varchar(100) not null
+    * duration int not null
+    * album_id varchar(100) <<FK>>
+}
+
+entity Album {
+    * album_id varchar(100) <<PK>>
+    --
+    * title varchar(100) not null
+    * release_date date not null
+}
+
+entity Artist {
+    * artist_id varchar(100) <<PK>>
+    --
+    * name varchar(100) not null 
+    * bio text
+}
+
+entity HasAlbum {
+    * artist_id varchar(100) <<FK>>
+    * album_id varchar(100) <<FK>>
+}
+
+entity FollowArtist {
+    * user_id varchar(100) <<FK>>
+    * artist_id varchar(100) <<FK>>
+}
+
+entity FollowPlaylist {
+    * user_id varchar(100) <<FK>>
+    * playlist_id varchar(100) <<FK>>
+}
+
+User ||--o{ Playlist : Create
+Playlist }--o| PlaylistCategory : Contains
+
+Playlist }o-- ContainsSong
+ContainsSong --o{ Song
+
+Song }|--|| Album : Contains
+
+Album }|-- HasAlbum
+HasAlbum --|{ Artist
+
+Artist }o-- FollowArtist
+FollowArtist --o{ User
+
+User }o-- FollowPlaylist
+FollowPlaylist --o{ Playlist
+
+@enduml
